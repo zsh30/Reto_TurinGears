@@ -1,0 +1,58 @@
+swagger: '2.0'
+info:
+  description: proxy event
+  title: proxy-api-hello
+  version: 1.0.0
+host: proxy-api-hello-<PROJECT_NUMBER>.<REGION>.run.app
+schemes:
+  - https
+produces:
+  - application/json
+
+paths:
+  /:
+    get:
+      x-google-backend:
+        address: https://hello-<PROJECT_NUMBER>.<REGION>.run.app
+        protocol: h2
+        path_translation: APPEND_PATH_TO_ADDRESS
+      summary: "Access"
+      operationId: "access"
+      responses:
+        '200':
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/successfully"
+        '400':
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/error"
+        '500':
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/int_error"
+      security:
+        - api_key: []
+
+definitions:
+  successfully:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  error:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  int_error:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    in: header
+    name: x-api-key
